@@ -12,6 +12,8 @@ import emoji
 import sqlite3 as sl
 
 # If modifying these scopes, delete the file token.json.
+import QuordleEmailSender
+
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']
 CON = sl.connect('QUORDLE_LEADERBOARD.db')
 
@@ -81,7 +83,7 @@ def parseSnippet(msg):
             if num.isnumeric():
                 totalScore += int(num)
             elif num == ':red_square:':
-                totalScore += 10
+                totalScore += 13
         return totalScore
     else:
         print('Email didn\'t start with Quordle and is not being read further')
@@ -148,10 +150,12 @@ def setupDB():
             );
         """)
 
-# TODO Wake up and check for emails periodically
-# TODO Send Leaderboard email at 11:59
+
+# TODO add to email the number of days left of the competition (how many days until end of month)
 
 if __name__ == '__main__':
    # Uncomment if this is the first time running the project and you dont have a QuoprdleLeaderBoard.db in the project directory
    # setupDB()
     main()
+    QuordleEmailSender.sendEmail()
+
