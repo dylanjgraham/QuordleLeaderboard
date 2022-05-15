@@ -5,6 +5,8 @@ import ssl
 from email.message import EmailMessage
 import unrevisioned
 import sqlite3 as sl
+from calendar import monthrange
+import datetime
 
 PORT = 465  # For SSL
 CON = sl.connect('QUORDLE_LEADERBOARD.db')
@@ -18,7 +20,8 @@ def sendEmail():
 
         msg['Subject'] = 'Score Update'
         msg['From'] = "Quordle Leaderboard <quordleleaderboard@gmail.com>"
-        msg['To'] = recipients
+        # msg['To'] = recipients
+        msg['To'] = 'dylangraham97@gmail.com'
 
         # Create a secure SSL context
         context = ssl.create_default_context()
@@ -46,19 +49,23 @@ def getRecipients():
 
 def buildEmailContent():
     counter = 1
-    tbl = "<style>table, th, td {border: 1px solid black;border-collapse: collapse;}</style>"
-    tbl += "<table style=\"boarder=1px\"><tr><th style=\"padding-right:20px\">Position</th><th>Email</th><th style=\"padding-left=20px\">Score</th></tr>"
+    today = datetime.datetime.today()
+    daysInMonth = monthrange(today.year, today.month)
+    daysRemaining = daysInMonth[1] - today.day
+    html = "<div style=\"padding-bottom:25px\">Days Remaining: " + str(daysRemaining) + "</div>"
+    html += "<style>table, th, td {border: 1px solid black;border-collapse: collapse;}</style>"
+    html += "<table style=\"boarder=1px\"><tr><th style=\"padding-right:20px\">Position</th><th>Email</th><th style=\"padding-left=20px\">Score</th></tr>"
     with CON:
         data = CON.execute("SELECT * FROM LEADERBOARD order by TOTAL_SCORE asc")
         for row in data:
-            tbl += "<tr><td style=\"text-align:center\">%s</td>" % counter
+            html += "<tr><td style=\"text-align:center\">%s</td>" % counter
             email = row[1].replace('<', '')
             email = email.replace('>', '')
-            tbl += "<td style=\"text-align:center\">%s</td>" % email
-            tbl += "<td style=\"text-align:center\">%s</td>" % row[2]
+            html += "<td style=\"text-align:center\">%s</td>" % email
+            html += "<td style=\"text-align:center\">%s</td>" % row[2]
             counter += 1
-        tbl += "</table>"
-        return tbl
+        html += "</table>"
+        return html
 
 
 if __name__ == '__main__':
