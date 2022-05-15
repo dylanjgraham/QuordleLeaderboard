@@ -20,8 +20,7 @@ def sendEmail():
 
         msg['Subject'] = 'Score Update'
         msg['From'] = "Quordle Leaderboard <quordleleaderboard@gmail.com>"
-        # msg['To'] = recipients
-        msg['To'] = 'dylangraham97@gmail.com'
+        msg['To'] = recipients
 
         # Create a secure SSL context
         context = ssl.create_default_context()
