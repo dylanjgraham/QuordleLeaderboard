@@ -11,27 +11,31 @@ CON = sl.connect('QUORDLE_LEADERBOARD.db')
 
 def sendEmail():
     recipients = getRecipients()
-    msg = EmailMessage()
-    msg.set_content('This is my test message')
+    if len(recipients) > 0:
+        body = buildEmailContent()
+        msg = EmailMessage()
+        msg.set_content(body, subtype='html')
 
-    msg['Subject'] = 'Test Subject'
-    msg['From'] = "quordleleaderboard@gmail.com"
-    msg['To'] = recipients
+        msg['Subject'] = 'Score Update'
+        msg['From'] = "Quordle Leaderboard <quordleleaderboard@gmail.com>"
+        msg['To'] = recipients
 
-    # Create a secure SSL context
-    context = ssl.create_default_context()
-    context.check_hostname = False
-    context.verify_mode = ssl.CERT_NONE
+        # Create a secure SSL context
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", PORT, context=context) as server:
-        server.login("QuordleLeaderboard@gmail.com", unrevisioned.getPassword())
-        server.send_message(msg)
-        server.quit()
+        with smtplib.SMTP_SSL("smtp.gmail.com", PORT, context=context) as server:
+            server.login("QuordleLeaderboard@gmail.com", unrevisioned.getPassword())
+            server.send_message(msg)
+            server.quit()
+    else:
+        print("No recipients found in the table")
 
 def getRecipients():
     recipients = []
     with CON:
-        data = CON.execute("SELECT EMAIL FROM LEADERBOARD ")
+        data = CON.execute("SELECT EMAIL FROM LEADERBOARD")
         for row in data:
             email = str(row)
             email = email.replace('(\'<', '')
@@ -40,6 +44,21 @@ def getRecipients():
         return recipients
 
 
+def buildEmailContent():
+    counter = 1
+    tbl = "<style>table, th, td {border: 1px solid black;border-collapse: collapse;}</style>"
+    tbl += "<table style=\"boarder=1px\"><tr><th style=\"padding-right:20px\">Position</th><th>Email</th><th style=\"padding-left=20px\">Score</th></tr>"
+    with CON:
+        data = CON.execute("SELECT * FROM LEADERBOARD order by TOTAL_SCORE asc")
+        for row in data:
+            tbl += "<tr><td style=\"text-align:center\">%s</td>" % counter
+            email = row[1].replace('<', '')
+            email = email.replace('>', '')
+            tbl += "<td style=\"text-align:center\">%s</td>" % email
+            tbl += "<td style=\"text-align:center\">%s</td>" % row[2]
+            counter += 1
+        tbl += "</table>"
+        return tbl
 
 
 if __name__ == '__main__':

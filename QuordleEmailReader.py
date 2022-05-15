@@ -148,6 +148,8 @@ def setupDB():
             );
         """)
 
+# TODO Wake up and check for emails periodically
+# TODO Send Leaderboard email at 11:59
 
 if __name__ == '__main__':
    # Uncomment if this is the first time running the project and you dont have a QuoprdleLeaderBoard.db in the project directory
