@@ -134,28 +134,44 @@ def storeEmailID(msg):
     with CON:
         CON.executemany(sql, data)
 
+
+# if a player doesnt submit their score for the day they are given the maximum score as though they got 4 red squares
+def penalizeNonPlayers():
+    quordleDay = -1
+    with CON:
+        data = CON.execute("SELECT MAX(ProtocolTypeID) AS today FROM LEADERBOARD")
+        for val in data:
+            quordleDay = val
+    with CON:
+        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + quordleDay)
+
+
 def setupDB():
     with CON:
+        # CON.execute("""
+        #     CREATE TABLE READ_EMAILS (
+        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        #         GMAIL_ID TEXT
+        #     );
+        # """)
+        # CON.execute("""
+        #     CREATE TABLE LEADERBOARD (
+        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        #         EMAIL TEXT,
+        #         TOTAL_SCORE INTEGER
+        #     );
+        # """)
         CON.execute("""
-            CREATE TABLE READ_EMAILS (
-                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                GMAIL_ID TEXT
-            );
-        """)
-        CON.execute("""
-            CREATE TABLE LEADERBOARD (
-                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                EMAIL TEXT,
-                TOTAL_SCORE INTEGER
-            );
+                    ALTER TABLE LEADERBOARD
+RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
         """)
 
-
-# TODO add to email the number of days left of the competition (how many days until end of month)
 
 if __name__ == '__main__':
    # Uncomment if this is the first time running the project and you dont have a QuoprdleLeaderBoard.db in the project directory
    # setupDB()
     main()
+    penalizeNonPlayers()
     QuordleEmailSender.sendEmail()
+
 
