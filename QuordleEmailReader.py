@@ -96,7 +96,7 @@ def storeScore(todaysScore, email):
         currentScore = dbRow[2]
         ID = dbRow[0]
         newScore = currentScore + todaysScore
-        sql = 'UPDATE LEADERBOARD SET ID = ' + str(ID) + ', EMAIL = \'' + email + '\', TOTAL_SCORE = ' + str(newScore)
+        sql = 'UPDATE LEADERBOARD SET TOTAL_SCORE = ' + str(newScore) + ' WHERE ID = ' + str(ID)
         with CON:
             CON.execute(sql)
     else:
@@ -143,7 +143,7 @@ def penalizeNonPlayers():
         for val in data:
             quordleDay = val
     with CON:
-        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + quordleDay)
+        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + str(quordleDay[0]))
 
 
 def setupDB():

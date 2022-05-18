@@ -43,6 +43,7 @@ def getRecipients():
             email = email.replace('(\'<', '')
             email = email.replace('>\',)', '')
             recipients.append(email)
+            print(recipients)
         return recipients
 
 
