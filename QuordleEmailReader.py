@@ -69,6 +69,7 @@ def main():
         # TODO(developer) - Handle errors from gmail API.
         print(f'An error occurred: {error}')
 
+
 # Parse the email for the 4 emojis that contain the score.
 def parseSnippet(msg):
     totalScore = 0
@@ -143,7 +144,8 @@ def penalizeNonPlayers():
         for val in data:
             quordleDay = val
     with CON:
-        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + str(quordleDay[0]))
+        CON.execute(
+            "UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + str(quordleDay[0]))
 
 
 def setupDB():
@@ -167,11 +169,14 @@ RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
         """)
 
 
+# TODO Reset after the Month ends
+# TODO Add column to LEADERBOARD table of yesterday's score
+# TODO Prevent sending the same score twice and having it count (check for QuordleDay difference)
+
+
 if __name__ == '__main__':
-   # Uncomment if this is the first time running the project and you dont have a QuoprdleLeaderBoard.db in the project directory
-   # setupDB()
+    # Uncomment if this is the first time running the project and you dont have a QuoprdleLeaderBoard.db in the project directory
+    # setupDB()
     main()
     penalizeNonPlayers()
     QuordleEmailSender.sendEmail()
-
-
