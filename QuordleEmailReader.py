@@ -144,18 +144,17 @@ def penalizeNonPlayers():
         for val in data:
             quordleDay = val
     with CON:
-        CON.execute(
-            "UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + str(quordleDay[0]))
+        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + str(quordleDay[0]))
 
 
 def setupDB():
     with CON:
-        # CON.execute("""
-        #     CREATE TABLE READ_EMAILS (
-        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        #         GMAIL_ID TEXT
-        #     );
-        # """)
+        CON.execute("""
+            CREATE TABLE READ_EMAILS (
+                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                GMAIL_ID TEXT
+            );
+        """)
         # CON.execute("""
         #     CREATE TABLE LEADERBOARD (
         #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -169,7 +168,7 @@ RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
         """)
 
 
-# TODO Reset after the Month ends
+
 # TODO Add column to LEADERBOARD table of yesterday's score
 # TODO Prevent sending the same score twice and having it count (check for QuordleDay difference)
 

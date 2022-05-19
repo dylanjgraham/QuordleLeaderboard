@@ -10,6 +10,7 @@ import datetime
 
 PORT = 465  # For SSL
 CON = sl.connect('QUORDLE_LEADERBOARD.db')
+IS_LAST_DAY = False
 
 def sendEmail():
     recipients = getRecipients()
@@ -55,6 +56,8 @@ def buildEmailContent():
         if daysRemaining > 0:
             html = "<div style=\"padding-bottom:25px\">Days Remaining: " + str(daysRemaining) + "</div>"
         else:
+            global IS_LAST_DAY
+            IS_LAST_DAY = True
             firstPlace = ""
             data = CON.execute("SELECT * FROM LEADERBOARD order by TOTAL_SCORE asc")
             for firstRow in data:
@@ -85,5 +88,14 @@ def getDaysRemaining():
     daysRemaining = daysInMonth[1] - today.day
     return daysRemaining
 
+def truncateLeaderboard():
+    with CON:
+        CON.execute("""
+            TRUNCATE TABLE LEADERBOARD;
+            """)
+        print("truncated leaderboard")
+
 if __name__ == '__main__':
     sendEmail()
+    if IS_LAST_DAY:
+        truncateLeaderboard()
