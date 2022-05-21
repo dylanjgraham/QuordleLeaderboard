@@ -97,13 +97,13 @@ def storeScore(todaysScore, email):
         currentScore = dbRow[2]
         ID = dbRow[0]
         newScore = currentScore + todaysScore
-        sql = 'UPDATE LEADERBOARD SET TOTAL_SCORE = ' + str(newScore) + ' WHERE ID = ' + str(ID)
+        sql = 'UPDATE LEADERBOARD SET TOTAL_SCORE = ' + str(newScore) + ', YESTERDAY_SCORE =' + str(todaysScore) + ' WHERE ID = ' + str(ID)
         with CON:
             CON.execute(sql)
     else:
-        sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE) values(?, ?)'
+        sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, YESTERDAY_SCORE) values(?, ?, ?)'
         data = [
-            (email, todaysScore)
+            (email, todaysScore, todaysScore)
         ]
         with CON:
             CON.executemany(sql, data)
@@ -149,12 +149,12 @@ def penalizeNonPlayers():
 
 def setupDB():
     with CON:
-        CON.execute("""
-            CREATE TABLE READ_EMAILS (
-                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                GMAIL_ID TEXT
-            );
-        """)
+        # CON.execute("""
+        #     CREATE TABLE READ_EMAILS (
+        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        #         GMAIL_ID TEXT
+        #     );
+        # """)
         # CON.execute("""
         #     CREATE TABLE LEADERBOARD (
         #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -162,14 +162,18 @@ def setupDB():
         #         TOTAL_SCORE INTEGER
         #     );
         # """)
+#         CON.execute("""
+#                     ALTER TABLE LEADERBOARD
+# RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
+#         """)
+
         CON.execute("""
                     ALTER TABLE LEADERBOARD
-RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
-        """)
+        ADD COLUMN YESTERDAY_SCORE INTEGER;
+                """)
 
 
 
-# TODO Add column to LEADERBOARD table of yesterday's score
 # TODO Prevent sending the same score twice and having it count (check for QuordleDay difference)
 
 

@@ -68,7 +68,7 @@ def buildEmailContent():
             html = "<div style=\"padding-bottom:25px\">Days Remaining: " + str(daysRemaining) + "</div>"
             html += "<div style=\"padding-bottom:25px\">Congratulations " + firstPlace + "!!!</div>"
         html += "<style>table, th, td {border: 1px solid black;border-collapse: collapse;}</style>"
-        html += "<table style=\"boarder=1px\"><tr><th style=\"padding-right:20px\">Position</th><th>Email</th><th style=\"padding-left=20px\">Score</th></tr>"
+        html += "<table style=\"boarder=1px\"><tr><th style=\"padding-right:20px\">Position</th><th>Email</th><th style=\"padding-left=20px\">Score</th><th style=\"padding-left=20px\">Last Round</th></tr>"
         data = CON.execute("SELECT * FROM LEADERBOARD order by TOTAL_SCORE asc")
         for row in data:
             html += "<tr><td style=\"text-align:center\">%s</td>" % counter
@@ -76,6 +76,7 @@ def buildEmailContent():
             email = email.replace('>', '')
             html += "<td style=\"text-align:center\">%s</td>" % email
             html += "<td style=\"text-align:center\">%s</td>" % row[2]
+            html += "<td style=\"text-align:center\">%s</td>" % row[4]
             counter += 1
         html += "</table>"
         print(html)
