@@ -143,8 +143,9 @@ def penalizeNonPlayers():
         data = CON.execute("SELECT MAX(ProtocolTypeID) AS today FROM LEADERBOARD")
         for val in data:
             quordleDay = val
-    with CON:
-        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + str(quordleDay[0]))
+    if type(quordleDay) is int:
+        with CON:
+            CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + str(quordleDay[0]))
 
 
 def setupDB():
