@@ -30,7 +30,7 @@ def sendEmail():
 
         with smtplib.SMTP_SSL("smtp.gmail.com", PORT, context=context) as server:
             server.login("QuordleLeaderboard@gmail.com", unrevisioned.getPassword())
-            server.send_message(msg)
+#             server.send_message(msg)
             print("Email Sent")
             server.quit()
     else:
@@ -84,16 +84,13 @@ def buildEmailContent():
 
 
 def getDaysRemaining():
-    today = datetime.datetime.today()
-    daysInMonth = monthrange(today.year, today.month)
-    daysRemaining = daysInMonth[1] - today.day
+    today = datetime.datetime.today().weekday()
+    daysRemaining = 0 # 6 - today
     return daysRemaining
 
 def truncateLeaderboard():
     with CON:
-        CON.execute("""
-            TRUNCATE TABLE LEADERBOARD;
-            """)
+        CON.execute("DELETE FROM LEADERBOARD")
         print("truncated leaderboard")
 
 if __name__ == '__main__':
