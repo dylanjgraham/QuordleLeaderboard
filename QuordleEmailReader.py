@@ -166,11 +166,15 @@ def setupDB():
         #         TOTAL_SCORE INTEGER
         #     );
         # """)
-#         CON.execute("""
-#                     ALTER TABLE LEADERBOARD
-# RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
-#         """)
-        CON.execute("UPDATE LEADERBOARD SET EMAIL='<kengraham717@gmail.com>' where ID=3")
+        CON.execute("""
+                    ALTER TABLE LEADERBOARD
+RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
+        """)
+
+        # CON.execute("UPDATE LEADERBOARD SET EMAIL='<kengraham717@gmail.com>' where ID=3")
+
+#         CON.execute("""INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, ProtocolTypeID, YESTERDAY_SCORE)
+# VALUES ('<maddielum19@gmail.com>', '26', '111', '26');""")
 
         # CON.execute("""
         #             ALTER TABLE LEADERBOARD
