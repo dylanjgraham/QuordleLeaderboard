@@ -58,7 +58,10 @@ def main():
                     todaysScore = parseSnippet(msg['snippet'])
                     if todaysScore >= 0:
                         # print('Total Score: ' + str(todaysScore))
-                        fromEmail = msg['payload']['headers'][15]['value']
+                        if msg['payload']['headers'][15]['name'] == 'From':
+                            fromEmail = msg['payload']['headers'][15]['value']
+                        else:
+                            fromEmail = msg['payload']['headers'][16]['value']
                         storeScore(todaysScore, fromEmail)
                         storeEmailID(msg)
                 else:
@@ -167,11 +170,12 @@ def setupDB():
 #                     ALTER TABLE LEADERBOARD
 # RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
 #         """)
+        CON.execute("UPDATE LEADERBOARD SET EMAIL='<kengraham717@gmail.com>' where ID=3")
 
-        CON.execute("""
-                    ALTER TABLE LEADERBOARD
-        ADD COLUMN YESTERDAY_SCORE INTEGER;
-                """)
+        # CON.execute("""
+        #             ALTER TABLE LEADERBOARD
+        # ADD COLUMN YESTERDAY_SCORE INTEGER;
+        #         """)
 
 
 
