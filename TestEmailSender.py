@@ -1,0 +1,3 @@
+import QuordleEmailSender
+
+QuordleEmailSender.truncateLeaderboard()

@@ -55,14 +55,16 @@ def main():
                 msg = service.users().messages().get(userId='me', id=message['id']).execute()
                 if isNewMessage(msg):
                     print(msg['snippet'] + '\n\n')
-                    todaysScore = parseSnippet(msg['snippet'])
-                    if todaysScore >= 0:
-                        # print('Total Score: ' + str(todaysScore))
-                        if msg['payload']['headers'][15]['name'] == 'From':
+                    parsedMessage = parseSnippet(msg['snippet'])
+                    if parsedMessage != -1:
+                        todaysScore = parsedMessage[0]
+                        quordleDay = parsedMessage[1]
+
+                        if msg['payload']['headers'][15]['name'] == 'Return-Path':
                             fromEmail = msg['payload']['headers'][15]['value']
                         else:
-                            fromEmail = msg['payload']['headers'][16]['value']
-                        storeScore(todaysScore, fromEmail)
+                            fromEmail = msg['payload']['headers'][6]['value']
+                        storeScore(todaysScore, fromEmail, quordleDay)
                         storeEmailID(msg)
                 else:
                     print("Read an old message so we are stopping")
@@ -88,25 +90,25 @@ def parseSnippet(msg):
                 totalScore += int(num)
             elif num == ':red_square:':
                 totalScore += 13
-        return totalScore
+        return totalScore, splitMsg[2]
     else:
         print('Email didn\'t start with Quordle and is not being read further')
         return -1
 
 
-def storeScore(todaysScore, email):
+def storeScore(todaysScore, email, quordleDay):
     dbRow = getCurrentScoreRecord(email)
     if dbRow:
         currentScore = dbRow[2]
         ID = dbRow[0]
         newScore = currentScore + todaysScore
-        sql = 'UPDATE LEADERBOARD SET TOTAL_SCORE = ' + str(newScore) + ', YESTERDAY_SCORE =' + str(todaysScore) + ' WHERE ID = ' + str(ID)
+        sql = 'UPDATE LEADERBOARD SET TOTAL_SCORE = ' + str(newScore) + ', YESTERDAY_SCORE =' + str(todaysScore) + ', ProtocolTypeID = ' + str(quordleDay) + ' WHERE ID = ' + str(ID)
         with CON:
             CON.execute(sql)
     else:
-        sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, YESTERDAY_SCORE) values(?, ?, ?)'
+        sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, ProtocolTypeID, YESTERDAY_SCORE) values(?, ?, ?, ?)'
         data = [
-            (email, todaysScore, todaysScore)
+            (email, todaysScore, quordleDay, todaysScore)
         ]
         with CON:
             CON.executemany(sql, data)
@@ -166,10 +168,10 @@ def setupDB():
         #         TOTAL_SCORE INTEGER
         #     );
         # """)
-        CON.execute("""
-                    ALTER TABLE LEADERBOARD
-RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
-        """)
+#         CON.execute("""
+#                     ALTER TABLE LEADERBOARD
+# RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
+#         """)
 
         # CON.execute("UPDATE LEADERBOARD SET EMAIL='<kengraham717@gmail.com>' where ID=3")
 
@@ -180,10 +182,13 @@ RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
         #             ALTER TABLE LEADERBOARD
         # ADD COLUMN YESTERDAY_SCORE INTEGER;
         #         """)
+        CON.execute("DELETE from LEADERBOARD where ID = 8")
+        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 106 where ID = 3")
 
 
 
 # TODO Prevent sending the same score twice and having it count (check for QuordleDay difference)
+
 
 
 if __name__ == '__main__':
