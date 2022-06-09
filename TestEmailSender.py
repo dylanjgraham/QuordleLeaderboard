@@ -11,7 +11,7 @@ def truncateLeaderBoard():
     QuordleEmailSender.truncateLeaderboard()
 
 def sendMailToMe():
-    body = emoji.emojize(':keycap_8:')
+    body = emoji.emojize(':keycap_8: ')
     msg = EmailMessage()
     msg.set_content(body, subtype='html')
 

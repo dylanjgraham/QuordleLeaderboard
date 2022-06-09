@@ -18,7 +18,7 @@ def testStoreScore():
 
 
 def testEmojize():
-    print(emoji.emojize(':keycap_8:'))
+    print(emoji.emojize(':keycap_8: '))
 
 def getCredentials():
     creds = None

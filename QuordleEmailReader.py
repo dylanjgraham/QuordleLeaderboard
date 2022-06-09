@@ -92,7 +92,7 @@ def parseSnippet(msg):
                 totalScore += 13
         return totalScore, splitMsg[2], topEmojiScore + '<br>' + bottomEmojiScore
     else:
-        print('Email didn\'t start with Quordle and is not being read further')
+        print('Email didn\'t start with Quordle and is not being read further ')
         return -1
 
 def storeScore(todaysScore, email, quordleDay, emojiScore):

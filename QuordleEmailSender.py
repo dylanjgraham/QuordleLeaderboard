@@ -95,6 +95,6 @@ def truncateLeaderboard():
 
 if __name__ == '__main__':
     sendEmail()
-    print('IS_LAST_DAY=' + str(IS_LAST_DAY))
+    print(' IS_LAST_DAY=' + str(IS_LAST_DAY))
     if IS_LAST_DAY:
         truncateLeaderboard()
