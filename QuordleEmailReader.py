@@ -59,12 +59,12 @@ def main():
                     if parsedMessage != -1:
                         todaysScore = parsedMessage[0]
                         quordleDay = parsedMessage[1]
-
+                        emojiScore = parsedMessage[2]
                         if msg['payload']['headers'][15]['name'] == 'Return-Path':
                             fromEmail = msg['payload']['headers'][15]['value']
                         else:
                             fromEmail = msg['payload']['headers'][6]['value']
-                        storeScore(todaysScore, fromEmail, quordleDay)
+                        storeScore(todaysScore, fromEmail, quordleDay, emojiScore)
                         storeEmailID(msg)
                 else:
                     print("Read an old message so we are stopping")
@@ -84,31 +84,30 @@ def parseSnippet(msg):
         bottomEmojiScore = splitMsg[4]
         fourEmojiScore = topEmojiScore + bottomEmojiScore
         for ii in fourEmojiScore:
-            num = emoji.demojize(ii)
-            print(num)
+            num = ii
             if num.isnumeric():
+                print(num)
                 totalScore += int(num)
             elif num == ':red_square:':
                 totalScore += 13
-        return totalScore, splitMsg[2]
+        return totalScore, splitMsg[2], topEmojiScore + '<br>' + bottomEmojiScore
     else:
         print('Email didn\'t start with Quordle and is not being read further')
         return -1
 
-
-def storeScore(todaysScore, email, quordleDay):
+def storeScore(todaysScore, email, quordleDay, emojiScore):
     dbRow = getCurrentScoreRecord(email)
     if dbRow:
         currentScore = dbRow[2]
         ID = dbRow[0]
         newScore = currentScore + todaysScore
-        sql = 'UPDATE LEADERBOARD SET TOTAL_SCORE = ' + str(newScore) + ', YESTERDAY_SCORE =' + str(todaysScore) + ', ProtocolTypeID = ' + str(quordleDay) + ' WHERE ID = ' + str(ID)
+        sql = 'UPDATE LEADERBOARD SET TOTAL_SCORE = ' + str(newScore) + ', YESTERDAY_SCORE =' + str('\"' + emojiScore + '\"') + ', ProtocolTypeID = ' + str(quordleDay) + ' WHERE ID = ' + str(ID)
         with CON:
             CON.execute(sql)
     else:
         sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, ProtocolTypeID, YESTERDAY_SCORE) values(?, ?, ?, ?)'
         data = [
-            (email, todaysScore, quordleDay, todaysScore)
+            (email, todaysScore, quordleDay, str(emojiScore))
         ]
         with CON:
             CON.executemany(sql, data)
@@ -155,19 +154,22 @@ def penalizeNonPlayers():
 
 def setupDB():
     with CON:
-        # CON.execute("""
-        #     CREATE TABLE READ_EMAILS (
-        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        #         GMAIL_ID TEXT
-        #     );
-        # """)
-        # CON.execute("""
-        #     CREATE TABLE LEADERBOARD (
-        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        #         EMAIL TEXT,
-        #         TOTAL_SCORE INTEGER
-        #     );
-        # """)
+        CON.execute("""
+            CREATE TABLE READ_EMAILS (
+                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                GMAIL_ID TEXT
+            );
+        """)
+        CON.execute("""
+            CREATE TABLE LEADERBOARD (
+                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                EMAIL TEXT,
+                TOTAL_SCORE INTEGER,
+                ProtocolTypeID TEXT,
+                YESTERDAY_SCORE TEXT
+                
+            );
+        """)
 #         CON.execute("""
 #                     ALTER TABLE LEADERBOARD
 # RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
@@ -182,12 +184,13 @@ def setupDB():
         #             ALTER TABLE LEADERBOARD
         # ADD COLUMN YESTERDAY_SCORE INTEGER;
         #         """)
-        CON.execute("DELETE from LEADERBOARD where ID = 8")
-        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 106 where ID = 3")
+
+        # CON.execute("DELETE from LEADERBOARD where ID = 8")
+        # CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 106 where ID = 3")
 
 
 
-# TODO Prevent sending the same score twice and having it count (check for QuordleDay difference)
+# TODO Fix penalizeNonPlayers()
 
 
 

@@ -1,6 +1,7 @@
 import QuordleEmailReader
 
 import os.path
+import emoji
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -15,6 +16,9 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googlea
 def testStoreScore():
     QuordleEmailReader.storeScore(1, '<dylangraham97@gmail.com>', 169)
 
+
+def testEmojize():
+    print(emoji.emojize(':keycap_8:'))
 
 def getCredentials():
     creds = None
@@ -56,4 +60,5 @@ def getCredentials():
 
 
 if __name__ == '__main__':
-    getCredentials()
+    # getCredentials()
+    testEmojize()
