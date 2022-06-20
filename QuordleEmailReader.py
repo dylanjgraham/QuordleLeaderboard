@@ -147,9 +147,10 @@ def penalizeNonPlayers():
         data = CON.execute("SELECT MAX(ProtocolTypeID) AS today FROM LEADERBOARD")
         for val in data:
             quordleDay = val
-    if type(quordleDay) is int:
+    if quordleDay != -1:
+        fourRedSquares = emoji.emojize(":red_square:") + emoji.emojize(":red_square:") + "<br>" + emoji.emojize(":red_square:") + emoji.emojize(":red_square:")
         with CON:
-            CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52 WHERE ProtocolTypeID < " + str(quordleDay[0]))
+            CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52, YESTERDAY_SCORE = " + str('\"' + fourRedSquares + '\"') + ", ProtocolTypeID = " + str('\"' + quordleDay[0] + '\"') + " WHERE ProtocolTypeID < " + str(quordleDay[0]))
 
 
 def setupDB():
@@ -190,7 +191,8 @@ def setupDB():
 
 
 
-# TODO Fix penalizeNonPlayers()
+# TODO Prevent people from starting mid week
+# TODO send emails individually
 
 
 
