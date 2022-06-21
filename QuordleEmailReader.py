@@ -105,12 +105,15 @@ def storeScore(todaysScore, email, quordleDay, emojiScore):
         with CON:
             CON.execute(sql)
     else:
-        sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, ProtocolTypeID, YESTERDAY_SCORE) values(?, ?, ?, ?)'
-        data = [
-            (email, todaysScore, quordleDay, str(emojiScore))
-        ]
-        with CON:
-            CON.executemany(sql, data)
+        if QuordleEmailSender.getDaysRemaining() == 6:
+            sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, ProtocolTypeID, YESTERDAY_SCORE) values(?, ?, ?, ?)'
+            data = [
+                (email, todaysScore, quordleDay, str(emojiScore))
+            ]
+            with CON:
+                CON.executemany(sql, data)
+        else:
+            print(str(email) + " cannot be added mid week")
 
 
 def getCurrentScoreRecord(email):
@@ -191,7 +194,6 @@ def setupDB():
 
 
 
-# TODO Prevent people from starting mid week
 # TODO send emails individually
 
 
