@@ -14,7 +14,7 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googlea
 
 
 def testStoreScore():
-    QuordleEmailReader.storeScore(1, '<dylangraham97@gmail.com>', 169)
+    QuordleEmailReader.storeScore(34, '<maddielum19@gmail.com>', 148, 'emoji')
 
 
 def testEmojize():
@@ -49,7 +49,7 @@ def getCredentials():
         results = service.users().messages().list(userId='me', labelIds=['INBOX']).execute()
         messages = results.get('messages', [])
 
-        if not messages:
+        if not  messages:
             print("No messages found.")
         else:
             print("Good connection")
@@ -60,5 +60,6 @@ def getCredentials():
 
 
 if __name__ == '__main__':
-    # getCredentials()
-    testEmojize()
+    #getCredentials()
+    #testEmojize()
+    testStoreScore()
