@@ -145,15 +145,16 @@ def storeEmailID(msg):
 
 # if a player doesnt submit their score for the day they are given the maximum score as though they got 4 red squares
 def penalizeNonPlayers():
-    quordleDay = -1
-    with CON:
-        data = CON.execute("SELECT MAX(ProtocolTypeID) AS today FROM LEADERBOARD")
-        for val in data:
-            quordleDay = val
-    if quordleDay != -1:
-        fourRedSquares = emoji.emojize(":red_square:") + emoji.emojize(":red_square:") + "<br>" + emoji.emojize(":red_square:") + emoji.emojize(":red_square:")
+    if QuordleEmailSender.getDaysRemaining() < 6:
+        quordleDay = -1
         with CON:
-            CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52, YESTERDAY_SCORE = " + str('\"' + fourRedSquares + '\"') + ", ProtocolTypeID = " + str('\"' + quordleDay[0] + '\"') + " WHERE ProtocolTypeID < " + str(quordleDay[0]))
+            data = CON.execute("SELECT MAX(ProtocolTypeID) AS today FROM LEADERBOARD")
+            for val in data:
+                quordleDay = val
+        if quordleDay != -1:
+            fourRedSquares = emoji.emojize(":red_square:") + emoji.emojize(":red_square:") + "<br>" + emoji.emojize(":red_square:") + emoji.emojize(":red_square:")
+            with CON:
+                CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52, YESTERDAY_SCORE = " + str('\"' + fourRedSquares + '\"') + ", ProtocolTypeID = " + str('\"' + quordleDay[0] + '\"') + " WHERE ProtocolTypeID < " + str(quordleDay[0]))
 
 
 def setupDB():

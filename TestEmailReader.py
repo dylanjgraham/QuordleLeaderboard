@@ -14,7 +14,7 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googlea
 
 
 def testStoreScore():
-    QuordleEmailReader.storeScore(34, '<maddielum19@gmail.com>', 148, 'emoji')
+    QuordleEmailReader.storeScore(28, '<kengraham717@gmail.com>', 154, 'manual')
 
 
 def testEmojize():
@@ -60,6 +60,6 @@ def getCredentials():
 
 
 if __name__ == '__main__':
-    #getCredentials()
+    # getCredentials()
     #testEmojize()
     testStoreScore()
