@@ -8,17 +8,23 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import sqlite3 as sl
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']
+CON = sl.connect('QUORDLE_LEADERBOARD.db')
 
 
 
 def testStoreScore():
-    QuordleEmailReader.storeScore(28, '<kengraham717@gmail.com>', 154, 'manual')
+    QuordleEmailReader.storeScore(28, '<maddielum19@gmail.com>', 161, 'manual')
 
 
 def testEmojize():
     print(emoji.emojize(':keycap_8: '))
+    
+def removeEmailIds():
+    with CON:
+        CON.execute("DELETE from READ_EMAILS where ID = 132")
 
 def getCredentials():
     creds = None
@@ -60,6 +66,7 @@ def getCredentials():
 
 
 if __name__ == '__main__':
-    # getCredentials()
+    #getCredentials()
+    #removeEmailIds()
     #testEmojize()
     testStoreScore()

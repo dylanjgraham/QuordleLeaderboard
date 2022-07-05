@@ -88,7 +88,7 @@ def parseSnippet(msg):
             if num.isnumeric():
                 print(num)
                 totalScore += int(num)
-            elif num == ':red_square:':
+            elif emoji.demojize(num) == ':red_square:':
                 totalScore += 13
         return totalScore, splitMsg[2], topEmojiScore + '<br>' + bottomEmojiScore
     else:
