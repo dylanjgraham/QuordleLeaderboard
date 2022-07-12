@@ -16,7 +16,9 @@ CON = sl.connect('QUORDLE_LEADERBOARD.db')
 
 
 def testStoreScore():
-    QuordleEmailReader.storeScore(28, '<maddielum19@gmail.com>', 161, 'manual')
+    #QuordleEmailReader.storeScore(28, '<maddielum19@gmail.com>', 161, 'manual', True)
+    QuordleEmailReader.storeScore(30, '<dylangraham97@gmail.com>', 168, 'manual', True)
+    QuordleEmailReader.storeScore(24, '<kengraham717@gmail.com>', 168, 'manual', True)
 
 
 def testEmojize():

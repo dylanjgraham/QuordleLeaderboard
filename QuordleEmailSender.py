@@ -7,10 +7,12 @@ import unrevisioned
 import sqlite3 as sl
 from calendar import monthrange
 import datetime
+import logging
 
 PORT = 465  # For SSL
 CON = sl.connect('QUORDLE_LEADERBOARD.db')
 IS_LAST_DAY = False
+logging.basicConfig(filename='Quordle.log', encoding='utf-8', level = logging.DEBUG)
 
 def sendEmail():
     recipients = getRecipients()
@@ -30,9 +32,12 @@ def sendEmail():
 
         with smtplib.SMTP_SSL("smtp.gmail.com", PORT, context=context) as server:
             server.login("QuordleLeaderboard@gmail.com", unrevisioned.getPassword())
-            server.send_message(msg)
+            #server.send_message(msg)
             print("Email Sent")
             server.quit()
+            if getDaysRemaining() == 0:
+                logging.warning("Days remaining was " + getDaysRemaining() + " so we are truncating the leaderBoard")
+                truncateLeaderboard()
     else:
         print("No recipients found in the table")
 
@@ -56,8 +61,6 @@ def buildEmailContent():
         if daysRemaining > 0:
             html = "<div style=\"padding-bottom:25px\">Days Remaining: " + str(daysRemaining) + "</div>"
         else:
-            global IS_LAST_DAY
-            IS_LAST_DAY = True
             firstPlace = ""
             data = CON.execute("SELECT * FROM LEADERBOARD order by TOTAL_SCORE asc")
             for firstRow in data:
@@ -89,11 +92,11 @@ def getDaysRemaining():
     return daysRemaining
 
 def truncateLeaderboard():
+    logging.warning("Truncating leaderBoard")
     with CON:
         CON.execute("DELETE FROM LEADERBOARD")
         print("truncated leaderboard")
 
 if __name__ == '__main__':
     sendEmail()
-    if getDaysRemaining() == 0:
-        truncateLeaderboard()
+    

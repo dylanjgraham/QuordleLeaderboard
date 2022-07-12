@@ -7,7 +7,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-
+import logging
 import emoji
 import sqlite3 as sl
 
@@ -16,7 +16,7 @@ import QuordleEmailSender
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']
 CON = sl.connect('QUORDLE_LEADERBOARD.db')
-
+logging.basicConfig(filename='Quordle.log', encoding='utf-8', level = logging.DEBUG)
 
 def main():
     creds = None
@@ -53,6 +53,7 @@ def main():
             print("Message snippets:")
             for message in messages:
                 msg = service.users().messages().get(userId='me', id=message['id']).execute()
+                logging.debug("Found Message ID: " + message['id'])
                 if isNewMessage(msg):
                     print(msg['snippet'] + '\n\n')
                     parsedMessage = parseSnippet(msg['snippet'])
@@ -60,6 +61,7 @@ def main():
                         todaysScore = parsedMessage[0]
                         quordleDay = parsedMessage[1]
                         emojiScore = parsedMessage[2]
+                        logging.debug("todaysScore: %s quordleDay: %s" % (todaysScore, quordleDay))
                         if msg['payload']['headers'][15]['name'] == 'Return-Path':
                             fromEmail = msg['payload']['headers'][15]['value']
                         else:
@@ -68,11 +70,13 @@ def main():
                         storeEmailID(msg)
                 else:
                     print("Read an old message so we are stopping")
+                    logging.debug("Read an old message so we are stopping")
                     break
 
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
         print(f'An error occurred: {error}')
+        logging.error('Likely bad credentials ' + error)
 
 
 # Parse the email for the 4 emojis that contain the score.
@@ -95,7 +99,7 @@ def parseSnippet(msg):
         print('Email didn\'t start with Quordle and is not being read further ')
         return -1
 
-def storeScore(todaysScore, email, quordleDay, emojiScore):
+def storeScore(todaysScore, email, quordleDay, emojiScore, override = False):
     dbRow = getCurrentScoreRecord(email)
     if dbRow:
         currentScore = dbRow[2]
@@ -105,7 +109,7 @@ def storeScore(todaysScore, email, quordleDay, emojiScore):
         with CON:
             CON.execute(sql)
     else:
-        if QuordleEmailSender.getDaysRemaining() == 6:
+        if QuordleEmailSender.getDaysRemaining() == 6 or override == True:
             sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, ProtocolTypeID, YESTERDAY_SCORE) values(?, ?, ?, ?)'
             data = [
                 (email, todaysScore, quordleDay, str(emojiScore))
@@ -114,6 +118,8 @@ def storeScore(todaysScore, email, quordleDay, emojiScore):
                 CON.executemany(sql, data)
         else:
             print(str(email) + " cannot be added mid week")
+            logging.warning("user cannot be added mid week")
+            
 
 
 def getCurrentScoreRecord(email):
@@ -151,6 +157,7 @@ def penalizeNonPlayers():
             data = CON.execute("SELECT MAX(ProtocolTypeID) AS today FROM LEADERBOARD")
             for val in data:
                 quordleDay = val
+                logging.debug('Penalizing non-Players with QuordleDays less than %s' % (quordleDay))
         if quordleDay != -1:
             fourRedSquares = emoji.emojize(":red_square:") + emoji.emojize(":red_square:") + "<br>" + emoji.emojize(":red_square:") + emoji.emojize(":red_square:")
             with CON:
