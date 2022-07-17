@@ -24,6 +24,7 @@ def sendEmail():
         msg['Subject'] = 'Score Update'
         msg['From'] = "Quordle Leaderboard <quordleleaderboard@gmail.com>"
         msg['To'] = recipients
+        logging.debug("Email Recipients: " + str(recipients))
 
         # Create a secure SSL context
         context = ssl.create_default_context()
@@ -32,11 +33,12 @@ def sendEmail():
 
         with smtplib.SMTP_SSL("smtp.gmail.com", PORT, context=context) as server:
             server.login("QuordleLeaderboard@gmail.com", unrevisioned.getPassword())
-            #server.send_message(msg)
+            server.send_message(msg)
             print("Email Sent")
             server.quit()
+            logging.debug("Days remaining = " + str(getDaysRemaining()))
             if getDaysRemaining() == 0:
-                logging.warning("Days remaining was " + getDaysRemaining() + " so we are truncating the leaderBoard")
+                logging.warning("Days remaining was " + str(getDaysRemaining()) + " so we are truncating the leaderBoard")
                 truncateLeaderboard()
     else:
         print("No recipients found in the table")
