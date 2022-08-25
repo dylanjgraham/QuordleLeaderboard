@@ -82,9 +82,10 @@ def main():
                           server.send_message(msg)
                           print("Reminder Email Sent")
                           server.quit()
-                  else:
-                      print("Everyone already sent in their quordle score today")
-                        
+                          break;
+                    else:
+                        print("Everyone already sent in their quordle score today")
+                        break;
                        
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
@@ -105,7 +106,9 @@ def getCurrentPlayers():
     with CON:
         data = CON.execute("SELECT DISTINCT EMAIL FROM LEADERBOARD")
         for row in data:
-            players.append(str(row))
+            players.append(str(row[0]))
         return players
                 
+if __name__ == '__main__':
+    main()
         
