@@ -9,8 +9,17 @@ import logging
 import emoji
 import sqlite3 as sl
 
+import smtplib
+import ssl
+from email.message import EmailMessage
+import unrevisioned
+from calendar import monthrange
+import datetime
+
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']
 CON = sl.connect('QUORDLE_LEADERBOARD.db')
+PORT = 465  # For SSL
+logging.basicConfig(filename='Quordle.log', encoding='utf-8', level = logging.DEBUG)
 
 def main():
     creds = None
