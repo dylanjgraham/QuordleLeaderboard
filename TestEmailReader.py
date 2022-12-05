@@ -17,9 +17,9 @@ CON = sl.connect('QUORDLE_LEADERBOARD.db')
 
 def testStoreScore():
     #QuordleEmailReader.storeScore(52, '<dylangraham97@gmail.com>', 201, 'manual', True)
-    QuordleEmailReader.storeScore(157, '<maddielum19@gmail.com>', 171, 'manual', True)
-    QuordleEmailReader.storeScore(187, '<dylangraham97@gmail.com>', 171, 'manual', True)
-    QuordleEmailReader.storeScore(170, '<kengraham717@gmail.com>', 171, 'manual', True)
+    QuordleEmailReader.storeScore(48, '<maddielum19@gmail.com>', 225, 'manual', True)
+    QuordleEmailReader.storeScore(50, '<dylangraham97@gmail.com>', 225, 'manual', True)
+    QuordleEmailReader.storeScore(50, '<kengraham717@gmail.com>', 225, 'manual', True)
 
 def setPlayerScore():
     CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 119 where ID = 25")

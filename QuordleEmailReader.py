@@ -158,7 +158,7 @@ def penalizeNonPlayers():
             for val in data:
                 quordleDay = val
                 logging.debug('Penalizing non-Players with QuordleDays less than %s' % (quordleDay))
-        if quordleDay != -1:
+        if quordleDay != -1 and isinstance(quordleDay[0], str):
             fourRedSquares = emoji.emojize(":red_square:") + emoji.emojize(":red_square:") + "<br>" + emoji.emojize(":red_square:") + emoji.emojize(":red_square:")
             with CON:
                 CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52, YESTERDAY_SCORE = " + str('\"' + fourRedSquares + '\"') + ", ProtocolTypeID = " + str('\"' + quordleDay[0] + '\"') + " WHERE ProtocolTypeID < " + str(quordleDay[0]))
