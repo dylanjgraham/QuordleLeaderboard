@@ -11,13 +11,13 @@ def truncateLeaderBoard():
     QuordleEmailSender.truncateLeaderboard()
 
 def sendMailToMe():
-    body = emoji.emojize(':keycap_8: ')
+    body = QuordleEmailSender.buildEmailContent()
     msg = EmailMessage()
     msg.set_content(body, subtype='html')
 
     msg['Subject'] = 'Score Update'
     msg['From'] = "Quordle Leaderboard <quordleleaderboard@gmail.com>"
-    msg['To'] = 'dylangraham97@gmail.com'
+    msg['Bcc'] = 'dylangraham97@gmail.com'
 
     # Create a secure SSL context
     context = ssl.create_default_context()
@@ -30,5 +30,5 @@ def sendMailToMe():
 
 if __name__ == '__main__':
     # getCredentials()
-    # sendMailToMe()
-    truncateLeaderBoard()
+     sendMailToMe()
+    # truncateLeaderBoard()

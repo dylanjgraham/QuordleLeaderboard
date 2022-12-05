@@ -166,20 +166,27 @@ def penalizeNonPlayers():
 
 def setupDB():
     with CON:
+        # CON.execute("""
+        #     CREATE TABLE READ_EMAILS (
+        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        #         GMAIL_ID TEXT
+        #     );
+        # """)
+        # CON.execute("""
+        #     CREATE TABLE LEADERBOARD (
+        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        #         EMAIL TEXT,
+        #         TOTAL_SCORE INTEGER,
+        #         ProtocolTypeID TEXT,
+        #         YESTERDAY_SCORE TEXT
+        #     );
+        # """)
+
         CON.execute("""
-            CREATE TABLE READ_EMAILS (
-                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                GMAIL_ID TEXT
-            );
-        """)
-        CON.execute("""
-            CREATE TABLE LEADERBOARD (
+            CREATE TABLE HISTORIC_WINS (
                 ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 EMAIL TEXT,
-                TOTAL_SCORE INTEGER,
-                ProtocolTypeID TEXT,
-                YESTERDAY_SCORE TEXT
-                
+                NUM_WINS INTEGER
             );
         """)
 #         CON.execute("""
