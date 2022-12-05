@@ -26,7 +26,7 @@ def sendEmail():
 
         msg['Subject'] = 'Score Update'
         msg['From'] = "Quordle Leaderboard <quordleleaderboard@gmail.com>"
-        msg['To'] = recipients
+        msg['Bcc'] = recipients
         logging.debug("Email Recipients: " + str(recipients))
 
         # Create a secure SSL context

@@ -17,7 +17,7 @@ def sendMailToMe():
 
     msg['Subject'] = 'Score Update'
     msg['From'] = "Quordle Leaderboard <quordleleaderboard@gmail.com>"
-    msg['To'] = 'dylangraham97@gmail.com'
+    msg['Bcc'] = 'dylangraham97@gmail.com'
 
     # Create a secure SSL context
     context = ssl.create_default_context()
