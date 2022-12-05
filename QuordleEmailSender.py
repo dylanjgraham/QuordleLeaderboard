@@ -3,6 +3,9 @@ from __future__ import print_function
 import smtplib
 import ssl
 from email.message import EmailMessage
+
+import emoji
+
 import unrevisioned
 import sqlite3 as sl
 from calendar import monthrange
@@ -72,8 +75,9 @@ def buildEmailContent():
                 break
             html = "<div style=\"padding-bottom:25px\">Days Remaining: " + str(daysRemaining) + "</div>"
             html += "<div style=\"padding-bottom:25px\">Congratulations " + firstPlace + "!!!</div>"
+            addCrownToWinner(firstPlace)
         html += "<style>table, th, td {border: 1px solid black;border-collapse: collapse;}</style>"
-        html += "<table style=\"boarder=1px\"><tr><th style=\"padding-right:20px\">Position</th><th>Email</th><th style=\"padding-left=20px\">Score</th><th style=\"padding-left=20px\">Last Round</th></tr>"
+        html += "<table style=\"boarder=1px\"><tr><th style=\"padding-right:20px\">Position</th><th>Email</th><th style=\"padding-left=20px\">Score</th><th style=\"padding-left=20px\">Last Round</th><th style=\"padding-left=20px\">Total " + emoji.emojize(":crown:") + "</th></tr>"
         data = CON.execute("SELECT * FROM LEADERBOARD order by TOTAL_SCORE asc")
         for row in data:
             html += "<tr><td style=\"text-align:center\">%s</td>" % counter
@@ -82,6 +86,13 @@ def buildEmailContent():
             html += "<td style=\"text-align:center\">%s</td>" % email
             html += "<td style=\"text-align:center\">%s</td>" % row[2]
             html += "<td style=\"text-align:center\">%s</td>" % row[4]
+            historicData = CON.execute("SELECT * FROM HISTORIC_WINS where EMAIL = '" + email + "'")
+            isInTable = False
+            for row2 in historicData:
+                isInTable = True
+                html += "<td style=\"text-align:center\">%s</td>" % row2[2]
+            if not isInTable:
+                html += "<td style=\"text-align:center\">%s</td>" % "0"
             counter += 1
         html += "</table>"
         print(html)
@@ -98,6 +109,22 @@ def truncateLeaderboard():
     with CON:
         CON.execute("DELETE FROM LEADERBOARD")
         print("truncated leaderboard")
+
+def addCrownToWinner(email):
+    isInTable = False
+    with CON:
+        data = CON.execute("SELECT * FROM HISTORIC_WINS WHERE EMAIL = '" + email + "'")
+        for row in data:
+            isInTable = True
+    if isInTable:
+        CON.execute("UPDATE HISTORIC_WINS SET NUM_WINS = NUM_WINS + 1 WHERE EMAIL = '" + email + "'")
+    else:
+        sql = 'INSERT INTO HISTORIC_WINS (EMAIL, NUM_WINS) values(?, ?)'
+        data = [
+            (email, 1)
+        ]
+        with CON:
+            CON.executemany(sql, data)
 
 if __name__ == '__main__':
     sendEmail()

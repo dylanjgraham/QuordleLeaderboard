@@ -22,7 +22,8 @@ def testStoreScore():
     QuordleEmailReader.storeScore(170, '<kengraham717@gmail.com>', 171, 'manual', True)
 
 def setPlayerScore():
-    CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 119 where ID = 25")
+    with CON:
+        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 119 where ID = 8")
 
 def testEmojize():
     with CON:
@@ -72,8 +73,8 @@ def getCredentials():
 
 
 if __name__ == '__main__':
-    getCredentials()
+    #getCredentials()
     #removeEmailIds()
     #testEmojize()
-    #setPlayerScore()
+    setPlayerScore()
     #testStoreScore()
