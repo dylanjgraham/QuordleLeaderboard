@@ -99,7 +99,7 @@ def parseSnippet(msg):
         print('Email didn\'t start with Quordle and is not being read further ')
         return -1
 
-def storeScore(todaysScore, email, quordleDay, emojiScore, override = False):
+def storeScore(todaysScore, email, quordleDay, emojiScore):
     dbRow = getCurrentScoreRecord(email)
     if dbRow:
         currentScore = dbRow[2]
@@ -109,18 +109,22 @@ def storeScore(todaysScore, email, quordleDay, emojiScore, override = False):
         with CON:
             CON.execute(sql)
     else:
-        if QuordleEmailSender.getDaysRemaining() == 6 or override == True:
-            sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, ProtocolTypeID, YESTERDAY_SCORE) values(?, ?, ?, ?)'
-            data = [
-                (email, todaysScore, quordleDay, str(emojiScore))
-            ]
-            with CON:
-                CON.executemany(sql, data)
-        else:
-            print(str(email) + " cannot be added mid week")
-            logging.warning("user cannot be added mid week")
+        daysRemaining = QuordleEmailSender.getDaysRemaining()
+        penalty = calculateMidWeekAdditionPointPenalty(daysRemaining)
+        penaltyMarker = ""
+        if penalty > 0:
+            penaltyMarker = "**"
+        sql = 'INSERT INTO LEADERBOARD (EMAIL, TOTAL_SCORE, ProtocolTypeID, YESTERDAY_SCORE) values(?, ?, ?, ?)'
+        data = [
+            (email, todaysScore + penalty, quordleDay, str(emojiScore + penaltyMarker))
+        ]
+        with CON:
+            CON.executemany(sql, data)
             
-
+# Penalty is set as if they got 4 red squares for each day they missed
+def calculateMidWeekAdditionPointPenalty(daysRemaining):
+    penalty = 52 * (6 - daysRemaining)
+    return penalty
 
 def getCurrentScoreRecord(email):
     with CON:

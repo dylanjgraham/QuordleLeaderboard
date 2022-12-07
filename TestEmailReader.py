@@ -17,9 +17,9 @@ CON = sl.connect('QUORDLE_LEADERBOARD.db')
 
 def testStoreScore():
     #QuordleEmailReader.storeScore(52, '<dylangraham97@gmail.com>', 201, 'manual', True)
-    QuordleEmailReader.storeScore(157, '<maddielum19@gmail.com>', 171, 'manual', True)
-    QuordleEmailReader.storeScore(187, '<dylangraham97@gmail.com>', 171, 'manual', True)
-    QuordleEmailReader.storeScore(170, '<kengraham717@gmail.com>', 171, 'manual', True)
+    QuordleEmailReader.storeScore(157, '<maddielum19@gmail.com>', 171, 'manual')
+    QuordleEmailReader.storeScore(187, '<dylangraham97@gmail.com>', 171, 'manual')
+    QuordleEmailReader.storeScore(170, '<kengraham717@gmail.com>', 171, 'manual')
 
 def setPlayerScore():
     with CON:
