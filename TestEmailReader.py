@@ -33,6 +33,10 @@ def removeEmailIds():
     with CON:
         CON.execute("DELETE from READ_EMAILS where ID = 132")
 
+def removePlayerFromLeaderboard():
+    with CON:
+        CON.execute("DELETE from LEADERBOARD where ID = 12")
+
 def getCredentials():
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
@@ -76,5 +80,6 @@ if __name__ == '__main__':
     #getCredentials()
     #removeEmailIds()
     #testEmojize()
-    setPlayerScore()
+    #setPlayerScore()
     #testStoreScore()
+    removePlayerFromLeaderboard()

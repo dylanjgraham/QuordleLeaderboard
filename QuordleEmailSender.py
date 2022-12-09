@@ -95,7 +95,8 @@ def buildEmailContent():
                 html += "<td style=\"text-align:center\">%s</td>" % "0"
             counter += 1
         html += "</table>"
-        html += "<p>** Indicates a player that was added mid week and therefore has a score of 4 red squares for each " \
+        if "**" in html:
+            html += "<p>** Indicates a player that was added mid week and therefore has a score of 4 red squares for each " \
                 "day they missed </p>"
         print(html)
         return html
