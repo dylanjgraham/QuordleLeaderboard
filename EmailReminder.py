@@ -78,7 +78,7 @@ def main():
 
                       msg['Subject'] = 'Quordle Reminder'
                       msg['From'] = "Quordle Leaderboard <quordleleaderboard@gmail.com>"
-                      msg['To'] = currentPlayers
+                      msg['Bcc'] = currentPlayers
                       logging.debug("Email Recipients of reminder email: " + str(currentPlayers))
 
                       # Create a secure SSL context
