@@ -66,16 +66,15 @@ def buildEmailContent():
         if daysRemaining > 0:
             html = "<div style=\"padding-bottom:25px\">Days Remaining: " + str(daysRemaining) + "</div>"
         else:
-            firstPlace = ""
-            data = CON.execute("SELECT * FROM LEADERBOARD order by TOTAL_SCORE asc")
-            for firstRow in data:
-                email = firstRow[1].replace('<', '')
-                email = email.replace('>', '')
-                firstPlace = email
-                break
+            winners = findWinner()
+            stringWinners = ""
+            for winner in winners:
+                stringWinners += winner + emoji.emojize(":crown:") + ", "
+            stringWinners = stringWinners[:-2]  # removes the last comma
+
             html = "<div style=\"padding-bottom:25px\">Days Remaining: " + str(daysRemaining) + "</div>"
-            html += "<div style=\"padding-bottom:25px\">Congratulations " + firstPlace + "!!!</div>"
-            addCrownToWinner(firstPlace)
+            html += "<div style=\"padding-bottom:25px\">Congratulations " + stringWinners + "</div>"
+            addCrownToWinner(winners)
         html += "<style>table, th, td {border: 1px solid black;border-collapse: collapse;}</style>"
         html += "<table style=\"boarder=1px\"><tr><th style=\"padding-right:20px\">Position</th><th>Email</th><th style=\"padding-left=20px\">Score</th><th style=\"padding-left=20px\">Last Round</th><th style=\"padding-left=20px\">Total " + emoji.emojize(":crown:") + "</th></tr>"
         data = CON.execute("SELECT * FROM LEADERBOARD order by TOTAL_SCORE asc")
@@ -113,21 +112,39 @@ def truncateLeaderboard():
         CON.execute("DELETE FROM LEADERBOARD")
         print("truncated leaderboard")
 
-def addCrownToWinner(email):
+
+def findWinner():
+    winners = []
+    firstPlaceScore = -1
+    data = CON.execute("SELECT * FROM LEADERBOARD order by TOTAL_SCORE asc")
+    for row in data:
+        email = row[1].replace('<', '')
+        email = email.replace('>', '')
+        if len(winners) < 1:
+            winners.append(email)
+            firstPlaceScore = row[2]
+        elif row[2] == firstPlaceScore:
+            winners.append(email)
+        else:
+            break
+    return winners
+
+def addCrownToWinner(winners):
     isInTable = False
-    with CON:
-        data = CON.execute("SELECT * FROM HISTORIC_WINS WHERE EMAIL = '" + email + "'")
-        for row in data:
-            isInTable = True
-    if isInTable:
-        CON.execute("UPDATE HISTORIC_WINS SET NUM_WINS = NUM_WINS + 1 WHERE EMAIL = '" + email + "'")
-    else:
-        sql = 'INSERT INTO HISTORIC_WINS (EMAIL, NUM_WINS) values(?, ?)'
-        data = [
-            (email, 1)
-        ]
+    for email in winners:
         with CON:
-            CON.executemany(sql, data)
+            data = CON.execute("SELECT * FROM HISTORIC_WINS WHERE EMAIL = '" + email + "'")
+            for row in data:
+                isInTable = True
+        if isInTable:
+            CON.execute("UPDATE HISTORIC_WINS SET NUM_WINS = NUM_WINS + 1 WHERE EMAIL = '" + email + "'")
+        else:
+            sql = 'INSERT INTO HISTORIC_WINS (EMAIL, NUM_WINS) values(?, ?)'
+            data = [
+                (email, 1)
+            ]
+            with CON:
+                CON.executemany(sql, data)
 
 if __name__ == '__main__':
     sendEmail()
