@@ -76,7 +76,9 @@ def main():
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
         print(f'An error occurred: {error}')
-        logging.error('Likely bad credentials ' + error)
+
+        # Send myself the error message
+        QuordleEmailSender.sendMailToMe(str(error))
 
 
 # Parse the email for the 4 emojis that contain the score.
@@ -191,13 +193,15 @@ def setupDB():
         #     );
         # """)
 
-        CON.execute("""
-            CREATE TABLE HISTORIC_WINS (
-                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                EMAIL TEXT,
-                NUM_WINS INTEGER
-            );
-        """)
+        # CON.execute("""
+        #     CREATE TABLE HISTORIC_WINS (
+        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        #         EMAIL TEXT,
+        #         NUM_WINS INTEGER
+        #     );
+        # """)
+
+
 #         CON.execute("""
 #                     ALTER TABLE LEADERBOARD
 # RENAME COLUMN ProtocolTypeID TO QUORDLE_DAY;
@@ -213,8 +217,8 @@ def setupDB():
         # ADD COLUMN YESTERDAY_SCORE INTEGER;
         #         """)
 
-        # CON.execute("DELETE from LEADERBOARD where ID = 8")
-        # CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 106 where ID = 3")
+        #CON.execute("DELETE from LEADERBOARD where ID = 7")
+        CON.execute("UPDATE LEADERBOARD SET EMAIL = '<dylangraham97@gmail.com>' where ID = 9")
 
 
 
