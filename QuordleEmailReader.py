@@ -68,6 +68,8 @@ def main():
                             fromEmail = msg['payload']['headers'][6]['value']
                         storeScore(todaysScore, fromEmail, quordleDay, emojiScore)
                         storeEmailID(msg)
+                    else:
+                        QuordleEmailSender.sendMailToMe("The following email was ignored \n " + msg['snippet'])
                 else:
                     print("Read an old message so we are stopping")
                     logging.debug("Read an old message so we are stopping")
