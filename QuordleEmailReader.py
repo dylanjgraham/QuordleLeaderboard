@@ -40,8 +40,6 @@ def main():
     try:
         # Call the Gmail API
         service = build('gmail', 'v1', credentials=creds)
-        results = service.users().labels().list(userId='me').execute()
-        labels = results.get('labels', [])
 
         # Call the Gmail API to fetch INBOX
         results = service.users().messages().list(userId='me', labelIds=['INBOX']).execute()
@@ -62,10 +60,14 @@ def main():
                         quordleDay = parsedMessage[1]
                         emojiScore = parsedMessage[2]
                         logging.debug("todaysScore: %s quordleDay: %s" % (todaysScore, quordleDay))
-                        if msg['payload']['headers'][15]['name'] == 'Return-Path':
-                            fromEmail = msg['payload']['headers'][15]['value']
-                        else:
-                            fromEmail = msg['payload']['headers'][6]['value']
+                        fromEmail = findFromEmail(msg['payload']['headers'])
+                        if fromEmail == "":
+                            QuordleEmailSender.sendMailToMe("Could not find the email address for this message \n " + msg['snippet'])
+                            break
+                        # if msg['payload']['headers'][15]['name'] == 'Return-Path':
+                        #     fromEmail = msg['payload']['headers'][15]['value']
+                        # else:
+                        #     fromEmail = msg['payload']['headers'][6]['value']
                         storeScore(todaysScore, fromEmail, quordleDay, emojiScore)
                         storeEmailID(msg)
                     else:
@@ -175,6 +177,14 @@ def penalizeNonPlayers():
             fourRedSquares = emoji.emojize(":red_square:") + emoji.emojize(":red_square:") + "<br>" + emoji.emojize(":red_square:") + emoji.emojize(":red_square:")
             with CON:
                 CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52, YESTERDAY_SCORE = " + str('\"' + fourRedSquares + '\"') + ", ProtocolTypeID = " + str('\"' + quordleDay[0] + '\"') + " WHERE ProtocolTypeID < " + str(quordleDay[0]))
+
+# The Return-Path comes in at different indexes seemingly dependent on which email
+# client is used to send it as well as android vs iphone so we must search the headers for the field
+def findFromEmail(headersList):
+    for dict in headersList:
+        if dict['name'] == 'Return-Path':
+            return dict['value']
+    return ""
 
 
 def setupDB():

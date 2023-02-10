@@ -31,7 +31,7 @@ def testEmojize():
     
 def removeEmailIds():
     with CON:
-        CON.execute("DELETE from READ_EMAILS where ID = 132")
+        CON.execute("DELETE from READ_EMAILS")
 
 def removePlayerFromLeaderboard():
     with CON:
@@ -78,8 +78,8 @@ def getCredentials():
 
 if __name__ == '__main__':
     #getCredentials()
-    #removeEmailIds()
+    removeEmailIds()
     #testEmojize()
-    setPlayerScore()
+    #setPlayerScore()
     #testStoreScore()
     #removePlayerFromLeaderboard()
