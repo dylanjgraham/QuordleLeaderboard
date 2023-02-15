@@ -35,7 +35,7 @@ def removeEmailIds():
 
 def removePlayerFromLeaderboard():
     with CON:
-        CON.execute("DELETE from LEADERBOARD where ID = 12")
+        CON.execute("DELETE from LEADERBOARD where ID = 16")
 
 def getCredentials():
     creds = None
@@ -77,8 +77,8 @@ def getCredentials():
 
 
 if __name__ == '__main__':
-    #getCredentials()
-    removeEmailIds()
+    getCredentials()
+    #removeEmailIds()
     #testEmojize()
     #setPlayerScore()
     #testStoreScore()
