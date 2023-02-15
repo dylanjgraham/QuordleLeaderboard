@@ -72,9 +72,9 @@ def main():
                     logging.debug("Read an old message; Anyone left in currentPlayers list has not sent in a quordle yet today")
                     
                     if len(currentPlayers) > 0:
-                      body = "It looks like you may have forgotten to send in your Quordle Email today! \n \n" +
+                      body = ("It looks like you may have forgotten to send in your Quordle Email today! \n \n" +
                       "Be sure to send it in before 11:55 pm tonight! \n \n" +
-                      "Please do not reply to this email. Send your score as a new message to Quordleleaderboard@gmail.com"
+                      "Please do not reply to this email. Send your score as a new message to Quordleleaderboard@gmail.com")
                       msg = EmailMessage()
                       msg.set_content(body, subtype='html')
 
