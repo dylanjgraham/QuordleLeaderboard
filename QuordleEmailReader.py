@@ -114,11 +114,16 @@ def storeScore(todaysScore, email, quordleDay, emojiScore):
     dbRow = getCurrentScoreRecord(email)
     if dbRow:
         currentScore = dbRow[2]
-        ID = dbRow[0]
-        newScore = currentScore + todaysScore
-        sql = 'UPDATE LEADERBOARD SET TOTAL_SCORE = ' + str(newScore) + ', YESTERDAY_SCORE =' + str('\"' + emojiScore + '\"') + ', ProtocolTypeID = ' + str(quordleDay) + ' WHERE ID = ' + str(ID)
-        with CON:
-            CON.execute(sql)
+        existingQuordleDay = dbRow[3]
+        if existingQuordleDay == quordleDay:
+            # Looks like they tried to upload the same days score twice. we dont want to accidentally double their score so we will not store this score
+            QuordleEmailSender.sendMailToMe('We have encountered a duplicate email for quordleDay ' + quordleDay + '. This email was ignored')
+        else:
+            ID = dbRow[0]
+            newScore = currentScore + todaysScore
+            sql = 'UPDATE LEADERBOARD SET TOTAL_SCORE = ' + str(newScore) + ', YESTERDAY_SCORE =' + str('\"' + emojiScore + '\"') + ', ProtocolTypeID = ' + str(quordleDay) + ' WHERE ID = ' + str(ID)
+            with CON:
+                CON.execute(sql)
     else:
         daysRemaining = QuordleEmailSender.getDaysRemaining()
         penalty = calculateMidWeekAdditionPointPenalty(daysRemaining)

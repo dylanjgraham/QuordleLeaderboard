@@ -40,7 +40,7 @@ def testEmojize():
 
 def removePlayerFromLeaderboard():
     with CON:
-        CON.execute("DELETE from LEADERBOARD where ID = 12")
+        CON.execute("DELETE from LEADERBOARD where ID = 16")
 
 def getCredentials():
     creds = None
@@ -82,8 +82,12 @@ def getCredentials():
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     #getCredentials()
     #changePlayerEmail()
+=======
+    getCredentials()
+>>>>>>> 17c3652c4186a4d196c4014590ae610c95f2ed0d
     #removeEmailIds()
     #testEmojize()
     setPlayerScore()
