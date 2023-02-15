@@ -17,21 +17,26 @@ CON = sl.connect('QUORDLE_LEADERBOARD.db')
 
 def testStoreScore():
     #QuordleEmailReader.storeScore(52, '<dylangraham97@gmail.com>', 201, 'manual', True)
-    QuordleEmailReader.storeScore(157, '<maddielum19@gmail.com>', 171, 'manual')
+    QuordleEmailReader.storeScore(206, '<maddielum19@gmail.com>', 171, 'manual')
     QuordleEmailReader.storeScore(187, '<dylangraham97@gmail.com>', 171, 'manual')
     QuordleEmailReader.storeScore(170, '<kengraham717@gmail.com>', 171, 'manual')
 
 def setPlayerScore():
     with CON:
-        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 383 where ID = 9")
+        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 188 where ID = 129")
+
+def changePlayerEmail():
+    with CON:
+        CON.execute("UPDATE LEADERBOARD SET EMAIL = '<d7400d4e852b@mail.com>' where ID = 129")
+
 
 def testEmojize():
     with CON:
         CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 106 where ID = 3")
     
-def removeEmailIds():
-    with CON:
-        CON.execute("DELETE from READ_EMAILS")
+#def removeEmailIds():
+#    with CON:
+#        CON.execute("DELETE from READ_EMAILS")
 
 def removePlayerFromLeaderboard():
     with CON:
@@ -78,8 +83,9 @@ def getCredentials():
 
 if __name__ == '__main__':
     #getCredentials()
-    removeEmailIds()
+    #changePlayerEmail()
+    #removeEmailIds()
     #testEmojize()
-    #setPlayerScore()
+    setPlayerScore()
     #testStoreScore()
     #removePlayerFromLeaderboard()
