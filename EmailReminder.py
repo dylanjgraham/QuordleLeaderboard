@@ -13,8 +13,7 @@ import smtplib
 import ssl
 from email.message import EmailMessage
 import unrevisioned
-from calendar import monthrange
-import datetime
+import QuordleEmailReader
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']
 CON = sl.connect('QUORDLE_LEADERBOARD.db')
@@ -60,13 +59,10 @@ def main():
                 logging.debug("Found Message ID: " + message['id'])
                 if isNewMessage(msg):
                     for player in currentPlayers:
-                        if msg['payload']['headers'][15]['name'] == 'Return-Path':
-                            fromEmail = msg['payload']['headers'][15]['value']
-                        else:
-                            fromEmail = msg['payload']['headers'][6]['value']
+                        fromEmail = QuordleEmailReader.findFromEmail(msg['payload']['headers'])
                         if player == fromEmail:
                             currentPlayers.remove(player)
-                            break;
+                            break
                 else:
                     print("Read an old message")
                     logging.debug("Read an old message; Anyone left in currentPlayers list has not sent in a quordle yet today")
