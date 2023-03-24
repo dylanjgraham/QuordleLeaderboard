@@ -114,6 +114,12 @@ def getCurrentPlayers():
         data = CON.execute("SELECT DISTINCT EMAIL FROM LEADERBOARD")
         for row in data:
             players.append(str(row[0]))
+        # should only come to this on monday when the leaderboard is empty. We will artificially add the three
+        # below emails to make sure they are always reminded.
+        if len(players) == 0:
+            players.append("<dylangraham97@gmail.com>")
+            players.append("<maddielum19@gmail.com>")
+            players.append("<kengraham717@gmail.com>")
         return players
                 
 if __name__ == '__main__':
