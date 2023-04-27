@@ -97,6 +97,7 @@ def buildEmailContent():
         if "**" in html:
             html += "<p>** Indicates a player that was added mid week and therefore has a score of 4 red squares for each " \
                 "day they missed </p>"
+        html += "<br><br> <p> Review the rules of the competition at https://quordleleaderboard.com/rules </p>"
         print(html)
         return html
 
