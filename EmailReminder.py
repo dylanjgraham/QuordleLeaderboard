@@ -120,6 +120,7 @@ def getCurrentPlayers():
             players.append("<dylangraham97@gmail.com>")
             players.append("<maddielum19@gmail.com>")
             players.append("<kengraham717@gmail.com>")
+            players.append("<robert.paquin1@gmail.com>")
         return players
                 
 if __name__ == '__main__':
