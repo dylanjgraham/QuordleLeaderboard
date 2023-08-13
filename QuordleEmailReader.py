@@ -174,14 +174,14 @@ def penalizeNonPlayers():
     if QuordleEmailSender.getDaysRemaining() < 6:
         quordleDay = -1
         with CON:
-            data = CON.execute("SELECT MAX(ProtocolTypeID) AS today FROM LEADERBOARD")
+            data = CON.execute("SELECT MAX(QUORDLE_DAY) AS today FROM CURRENT_QUORDLE_DAY")
             for val in data:
                 quordleDay = val
                 logging.debug('Penalizing non-Players with QuordleDays less than %s' % (quordleDay))
-        if quordleDay != -1 and isinstance(quordleDay[0], str):
+        if quordleDay != -1 and isinstance(quordleDay[0], int):
             fourRedSquares = emoji.emojize(":red_square:") + emoji.emojize(":red_square:") + "<br>" + emoji.emojize(":red_square:") + emoji.emojize(":red_square:")
             with CON:
-                CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52, YESTERDAY_SCORE = " + str('\"' + fourRedSquares + '\"') + ", ProtocolTypeID = " + str('\"' + quordleDay[0] + '\"') + " WHERE ProtocolTypeID < " + str(quordleDay[0]))
+                CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = TOTAL_SCORE + 52, YESTERDAY_SCORE = " + str('\"' + fourRedSquares + '\"') + ", ProtocolTypeID = " + str('\"' + str(quordleDay[0]) + '\"') + " WHERE ProtocolTypeID < " + str(quordleDay[0]))
 
 # The Return-Path comes in at different indexes seemingly dependent on which email
 # client is used to send it as well as android vs iphone so we must search the headers for the field
@@ -195,9 +195,9 @@ def findFromEmail(headersList):
 def setupDB():
     with CON:
         # CON.execute("""
-        #     CREATE TABLE READ_EMAILS (
+        #     CREATE TABLE CURRENT_QUORDLE_DAY (
         #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        #         GMAIL_ID TEXT
+        #         QUORDLE_DAY INTEGER
         #     );
         # """)
         # CON.execute("""
@@ -235,17 +235,15 @@ def setupDB():
         #         """)
 
         #CON.execute("DELETE from LEADERBOARD where ID = 7")
-        CON.execute("UPDATE LEADERBOARD SET EMAIL = '<dylangraham97@gmail.com>' where ID = 9")
-
-
-
-# TODO send emails individually
+        # CON.execute("UPDATE LEADERBOARD SET EMAIL = '<dylangraham97@gmail.com>' where ID = 9")
+        CON.execute("""INSERT INTO CURRENT_QUORDLE_DAY (QUORDLE_DAY)
+VALUES (566);""")
 
 
 
 if __name__ == '__main__':
     # Uncomment if this is the first time running the project and you dont have a QuoprdleLeaderBoard.db in the project directory
     # setupDB()
-    main()
-    penalizeNonPlayers()
-    QuordleEmailSender.sendEmail()
+     main()
+     penalizeNonPlayers()
+     QuordleEmailSender.sendEmail()

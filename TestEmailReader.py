@@ -29,14 +29,18 @@ def changePlayerEmail():
     with CON:
         CON.execute("UPDATE LEADERBOARD SET EMAIL = '<d7400d4e852b@mail.com>' where ID = 129")
 
+def changeQuordleDay():
+    with CON:
+        CON.execute("UPDATE LEADERBOARD SET ProtocolTypeID = '501' where ID = 9")
+
 
 def testEmojize():
     with CON:
         CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 106 where ID = 3")
     
-#def removeEmailIds():
-#    with CON:
-#        CON.execute("DELETE from READ_EMAILS")
+def removeEmailIds():
+   with CON:
+       CON.execute("DELETE from READ_EMAILS where ID = 79")
 
 def removePlayerFromLeaderboard():
     with CON:
@@ -82,14 +86,11 @@ def getCredentials():
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     #getCredentials()
     #changePlayerEmail()
-=======
-    getCredentials()
->>>>>>> 17c3652c4186a4d196c4014590ae610c95f2ed0d
-    #removeEmailIds()
+    removeEmailIds()
+    #changeQuordleDay()
     #testEmojize()
-    setPlayerScore()
+    #setPlayerScore()
     #testStoreScore()
     #removePlayerFromLeaderboard()
