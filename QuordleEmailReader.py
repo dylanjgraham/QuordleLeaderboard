@@ -156,6 +156,10 @@ def isNewMessage(msg):
         data = CON.execute("SELECT * FROM READ_EMAILS WHERE GMAIL_ID = '" + msg['id'] + "'")
         for row in data:
             return False
+        quordleDayFromEmail = getQuordleDayFromEmail(msg)
+        if (quordleDayFromEmail != -1):
+            if (getQuordleDay() != getQuordleDayFromEmail(msg)):
+                return False;
         return True
 
 
@@ -191,15 +195,37 @@ def findFromEmail(headersList):
             return dict['value']
     return ""
 
+def getQuordleDay():
+    with CON:
+        data = CON.execute("SELECT MAX(QUORDLE_DAY) AS today FROM CURRENT_QUORDLE_DAY")
+            for val in data:
+                quordleDay = val[0]
+        return quordleDay
+
+def getQuordleDayFromEmail(msg):
+    totalScore = 0
+    splitMsg = msg.split()
+    # check to see if there was any email content to parse
+    if splitMsg:
+        if splitMsg[0] == 'Daily' and splitMsg[1] == 'Quordle':
+            quordleDay = splitMsg[3]
+            return quordleDay
+        else:
+            print('Email didn\'t start with Quordle and is not being read further ')
+            return -1
+    else:
+        print('Email had no parseable content?')
+        return -1
 
 def setupDB():
     with CON:
-        # CON.execute("""
-        #     CREATE TABLE CURRENT_QUORDLE_DAY (
-        #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        #         QUORDLE_DAY INTEGER
-        #     );
-        # """)
+         CON.execute("""
+             CREATE TABLE CURRENT_QUORDLE_DAY (
+                 ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                 QUORDLE_DAY INTEGER
+             );
+         """)
+         CON.execute("""INSERT INTO CURRENT_QUORDLE_DAY (QUORDLE_DAY) VALUES (566);""")
         # CON.execute("""
         #     CREATE TABLE LEADERBOARD (
         #         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -236,14 +262,13 @@ def setupDB():
 
         #CON.execute("DELETE from LEADERBOARD where ID = 7")
         # CON.execute("UPDATE LEADERBOARD SET EMAIL = '<dylangraham97@gmail.com>' where ID = 9")
-        CON.execute("""INSERT INTO CURRENT_QUORDLE_DAY (QUORDLE_DAY)
-VALUES (566);""")
+
 
 
 
 if __name__ == '__main__':
     # Uncomment if this is the first time running the project and you dont have a QuoprdleLeaderBoard.db in the project directory
     # setupDB()
-     main()
-     penalizeNonPlayers()
-     QuordleEmailSender.sendEmail()
+    main()
+    penalizeNonPlayers()
+    QuordleEmailSender.sendEmail()
