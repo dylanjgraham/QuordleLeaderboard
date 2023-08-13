@@ -23,7 +23,7 @@ def testStoreScore():
 
 def setPlayerScore():
     with CON:
-        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 188 where ID = 129")
+        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 54 where ID = 322")
 
 def changePlayerEmail():
     with CON:
@@ -32,7 +32,7 @@ def changePlayerEmail():
 
 def testEmojize():
     with CON:
-        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 106 where ID = 3")
+        CON.execute("UPDATE LEADERBOARD SET TOTAL_SCORE = 54 where ID = 3")
     
 #def removeEmailIds():
 #    with CON:
@@ -82,12 +82,9 @@ def getCredentials():
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     #getCredentials()
     #changePlayerEmail()
-=======
-    getCredentials()
->>>>>>> 17c3652c4186a4d196c4014590ae610c95f2ed0d
+    #getCredentials()
     #removeEmailIds()
     #testEmojize()
     setPlayerScore()
