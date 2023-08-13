@@ -88,13 +88,9 @@ def getCredentials():
 if __name__ == '__main__':
     #getCredentials()
     #changePlayerEmail()
-<<<<<<< HEAD
     #getCredentials()
     #removeEmailIds()
-=======
-    removeEmailIds()
-    #changeQuordleDay()
->>>>>>> f513ef03c45b6d6a694a8b0e1a846188ccba68a5
+    changeQuordleDay()
     #testEmojize()
     #setPlayerScore()
     #testStoreScore()

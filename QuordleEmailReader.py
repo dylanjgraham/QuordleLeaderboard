@@ -156,10 +156,10 @@ def isNewMessage(msg):
         data = CON.execute("SELECT * FROM READ_EMAILS WHERE GMAIL_ID = '" + msg['id'] + "'")
         for row in data:
             return False
-        quordleDayFromEmail = getQuordleDayFromEmail(msg)
+        quordleDayFromEmail = getQuordleDayFromEmail(msg['snippet'])
         if (quordleDayFromEmail != -1):
-            if (getQuordleDay() != getQuordleDayFromEmail(msg)):
-                return False;
+            if (str(getQuordleDay()) != quordleDayFromEmail):
+                return False
         return True
 
 
@@ -197,9 +197,10 @@ def findFromEmail(headersList):
 
 def getQuordleDay():
     with CON:
+        quordleDay = -1
         data = CON.execute("SELECT MAX(QUORDLE_DAY) AS today FROM CURRENT_QUORDLE_DAY")
-            for val in data:
-                quordleDay = val[0]
+        for val in data:
+            quordleDay = val[0]
         return quordleDay
 
 def getQuordleDayFromEmail(msg):
@@ -208,7 +209,7 @@ def getQuordleDayFromEmail(msg):
     # check to see if there was any email content to parse
     if splitMsg:
         if splitMsg[0] == 'Daily' and splitMsg[1] == 'Quordle':
-            quordleDay = splitMsg[3]
+            quordleDay = splitMsg[2]
             return quordleDay
         else:
             print('Email didn\'t start with Quordle and is not being read further ')
