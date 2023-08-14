@@ -165,11 +165,6 @@ def sendMailToMe(message):
         server.login("QuordleLeaderboard@gmail.com", unrevisioned.getPassword())
         server.send_message(msg)
 
-def increaseQuordleDay():
-   with CON:
-       CON.execute("UPDATE CURRENT_QUORDLE_DAY SET QUORDLE_DAY = QUORDLE_DAY + 1")
-
 if __name__ == '__main__':
     sendEmail()
-    increaseQuordleDay()
     
