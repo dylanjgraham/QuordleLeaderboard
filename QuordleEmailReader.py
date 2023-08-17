@@ -249,3 +249,4 @@ if __name__ == '__main__':
     main()
     penalizeNonPlayers()
     QuordleEmailSender.sendEmail()
+    # Commenting so I can commit
