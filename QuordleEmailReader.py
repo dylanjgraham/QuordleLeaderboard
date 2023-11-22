@@ -58,7 +58,7 @@ def main():
                     if parsedMessage != -1:
                         todaysScore = parsedMessage[0]
                         quordleDay = parsedMessage[1]
-                        emojiScore = parsedMessage[2]
+                        emojiScore = str(parsedMessage[2]) + '<br>' + str(todaysScore)
                         logging.debug("todaysScore: %s quordleDay: %s" % (todaysScore, quordleDay))
                         fromEmail = findFromEmail(msg['payload']['headers'])
                         if fromEmail == "":
