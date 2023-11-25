@@ -85,10 +85,10 @@ def main():
                                 "Please do not reply to this email. Send your score as a new message to Quordleleaderboard@gmail.com")
                         logging.debug("Email Recipients of reminder email: " + str(currentPlayers))
                         sendEmail(currentPlayers, 'Quordle Reminder', body)
-
+                        break
                     else:
                         print("Everyone already sent in their quordle score today")
-                        break;
+                        break
 
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
