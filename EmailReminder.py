@@ -81,13 +81,13 @@ def main():
 
                     if len(currentPlayers) > 0:
                         body = ("It looks like you may have forgotten to send in your Quordle Email today! \n \n" +
-                                "Be sure to send it in before 11:55 pm tonight! \n \n" +
+                                "Be sure to send it in before 11:55 pm EST tonight! \n \n" +
                                 "Please do not reply to this email. Send your score as a new message to Quordleleaderboard@gmail.com")
                         logging.debug("Email Recipients of reminder email: " + str(currentPlayers))
                         sendEmail(currentPlayers, 'Quordle Reminder', body)
                         break
                     else:
-                        print("Everyone already sent in their quordle score today")
+                        print("Everyone already sent in their quordle score today :)")
                         break
 
     except HttpError as error:
@@ -114,7 +114,6 @@ def getCurrentPlayers():
         # below emails to make sure they are always reminded.
         if len(players) == 0:
             players.append("<dylangraham97@gmail.com>")
-            players.append("<maddielum19@gmail.com>")
             players.append("<kengraham717@gmail.com>")
             players.append("<robert.paquin1@gmail.com>")
         return players
