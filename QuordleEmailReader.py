@@ -49,6 +49,10 @@ def main():
             print("No messages found.")
         else:
             print("Message snippets:")
+            daysRemaining = QuordleEmailSender.getDaysRemaining()
+            LatestQuordleDayInDB = -1
+            if daysRemaining < 6:
+                LatestQuordleDayInDB = getLatestQuordleDayInDB()
             for message in messages:
                 msg = service.users().messages().get(userId='me', id=message['id']).execute()
                 logging.debug("Found Message ID: " + message['id'])
@@ -58,18 +62,17 @@ def main():
                     if parsedMessage != -1:
                         todaysScore = parsedMessage[0]
                         quordleDay = parsedMessage[1]
-                        emojiScore = str(parsedMessage[2]) + '<br>' + str(todaysScore)
-                        logging.debug("todaysScore: %s quordleDay: %s" % (todaysScore, quordleDay))
-                        fromEmail = findFromEmail(msg['payload']['headers'])
-                        if fromEmail == "":
-                            QuordleEmailSender.sendMailToMe("Could not find the email address for this message \n " + msg['snippet'])
-                            break
-                        # if msg['payload']['headers'][15]['name'] == 'Return-Path':
-                        #     fromEmail = msg['payload']['headers'][15]['value']
-                        # else:
-                        #     fromEmail = msg['payload']['headers'][6]['value']
-                        storeScore(todaysScore, fromEmail, quordleDay, emojiScore)
-                        storeEmailID(msg)
+                        if (LatestQuordleDayInDB != -1) and (int(quordleDay) - LatestQuordleDayInDB > 1):
+                            QuordleEmailSender.sendMailToMe("Someone tried to submit early. I am ignoring this email with quordle day " + quordleDay)
+                        else:
+                            emojiScore = str(parsedMessage[2]) + '<br>' + str(todaysScore)
+                            logging.debug("todaysScore: %s quordleDay: %s" % (todaysScore, quordleDay))
+                            fromEmail = findFromEmail(msg['payload']['headers'])
+                            if fromEmail == "":
+                                QuordleEmailSender.sendMailToMe("Could not find the email address for this message \n " + msg['snippet'])
+                                break
+                            storeScore(todaysScore, fromEmail, quordleDay, emojiScore)
+                            storeEmailID(msg)
                     else:
                         QuordleEmailSender.sendMailToMe("The following email was ignored \n " + msg['snippet'])
                 else:
@@ -192,6 +195,13 @@ def findFromEmail(headersList):
     return ""
 
 
+def getLatestQuordleDayInDB():
+    with CON:
+        data = CON.execute("SELECT MAX(ProtocolTypeID) AS today FROM LEADERBOARD")
+        for val in data:
+            return int(val[0])
+
+
 def setupDB():
     with CON:
         # CON.execute("""
@@ -249,4 +259,3 @@ if __name__ == '__main__':
     main()
     penalizeNonPlayers()
     QuordleEmailSender.sendEmail()
-    # Commenting so I can commit
