@@ -94,7 +94,7 @@ def parseSnippet(msg):
     splitMsg = msg.split()
     # check to see if there was any email content to parse
     if splitMsg:
-        if splitMsg[0] == 'Daily' and splitMsg[1] == 'Quordle':
+        if (splitMsg[0] == 'Daily' and splitMsg[1] == 'Quordle'):
             topEmojiScore = splitMsg[3]
             bottomEmojiScore = splitMsg[4]
             fourEmojiScore = topEmojiScore + bottomEmojiScore
@@ -106,6 +106,19 @@ def parseSnippet(msg):
                 elif emoji.demojize(num) == ':red_square:':
                     totalScore += 13
             return totalScore, splitMsg[2], topEmojiScore + '<br>' + bottomEmojiScore
+        elif splitMsg[1] == 'Daily' and splitMsg[2] == 'Quordle':
+            topEmojiScore = splitMsg[4]
+            bottomEmojiScore = splitMsg[5]
+            fourEmojiScore = topEmojiScore + bottomEmojiScore
+            for ii in fourEmojiScore:
+                num = ii
+                if num.isnumeric():
+                    print(num)
+                    totalScore += int(num)
+                elif emoji.demojize(num) == ':red_square:':
+                    totalScore += 13
+            return totalScore, splitMsg[3], topEmojiScore + '<br>' + bottomEmojiScore
+            
         else:
             print('Email didn\'t start with Quordle and is not being read further ')
             return -1

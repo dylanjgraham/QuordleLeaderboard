@@ -128,6 +128,9 @@ def isBadFormatEmail(msg):
         if splitMsg[0] == 'Daily' and splitMsg[1] == 'Quordle':
             print('All is good. No further action required')
             return False
+        elif splitMsg[1] == 'Daily' and splitMsg[2] == 'Quordle':
+            print('All is good. No further action required')
+            return False
         else:
             print('Email didn\'t start with Daily Quordle')
             return True
